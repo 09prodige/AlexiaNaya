@@ -30,7 +30,7 @@ export default function BackgroundLogo() {
       <div className="relative w-[70vw] h-[70vw] max-w-[900px] max-h-[900px] transform scale-125 md:scale-110">
         {/* Eye Open Image Watermark */}
         <Image
-          src="/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA .png"
+          src="/assets/Affiche/ANIMAT LOGO ALEXIA NAYA .png"
           alt="Watermark Logo Open"
           fill
           priority
@@ -42,7 +42,7 @@ export default function BackgroundLogo() {
 
         {/* Eye Closed Image Watermark */}
         <Image
-          src="/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA_Générique-03.png"
+          src="/assets/Affiche/ANIMAT LOGO ALEXIA NAYA_Générique-03.png"
           alt="Watermark Logo Closed"
           fill
           priority

@@ -17,9 +17,9 @@ export const metadata: Metadata = {
   title: "Alexia D'Oliveira | Portfolio",
   description: "Graphic design studio specialized in art direction, photography and illustration.",
   icons: {
-    icon: "/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA .png",
-    shortcut: "/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA .png",
-    apple: "/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA .png"
+    icon: "/assets/Affiche/ANIMAT LOGO ALEXIA NAYA .png",
+    shortcut: "/assets/Affiche/ANIMAT LOGO ALEXIA NAYA .png",
+    apple: "/assets/Affiche/ANIMAT LOGO ALEXIA NAYA .png"
   }
 };
 

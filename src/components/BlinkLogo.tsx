@@ -42,7 +42,7 @@ export default function BlinkLogo({ size, className = 'w-44 h-44 md:w-80 md:h-80
     >
       {/* Eye Open Image */}
       <Image
-        src="/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA .png"
+        src="/assets/Affiche/ANIMAT LOGO ALEXIA NAYA .png"
         alt="Logo Alexia D'Oliveira - Oeil Ouvert"
         fill
         priority
@@ -54,7 +54,7 @@ export default function BlinkLogo({ size, className = 'w-44 h-44 md:w-80 md:h-80
 
       {/* Eye Closed Image */}
       <Image
-        src="/assets/Affiche/DA Affiche+Pack/ANIMAT LOGO ALEXIA NAYA_Générique-03.png"
+        src="/assets/Affiche/ANIMAT LOGO ALEXIA NAYA_Générique-03.png"
         alt="Logo Alexia D'Oliveira - Oeil Ferme"
         fill
         priority
