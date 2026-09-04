@@ -3,21 +3,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface ArcadeItem {
+interface DbItem {
   title: string;
   type: 'image' | 'video';
   url: string;
 }
 
-const POCHETTES = [
-  { src: '/assets/Pochettes/Pochettes/JONEZ-POCHETTE.png',        title: 'Jonez',           artist: 'Alexia Naya' },
-  { src: '/assets/Pochettes/Pochettes/LEAM-ENCORE-V2.png',        title: 'Encore',          artist: 'LEAM' },
-  { src: '/assets/Pochettes/Pochettes/PRODI9E-J9-FACE-A.png',     title: 'J-09 Face A',     artist: 'PRODI9E' },
-  { src: '/assets/Pochettes/Pochettes/PATEK---ROLLIE---CCICO-FINAL-2.png', title: 'Patek & Rollie', artist: 'CCICO' },
-  { src: '/assets/Pochettes/Pochettes/JONEZZZ.png',               title: 'JONEZZZ',         artist: 'Alexia Naya' },
-  { src: '/assets/Pochettes/Pochettes/MAKE-MORE-ZFN.jpg',         title: 'Make More',       artist: 'ZFN' },
-  { src: '/assets/Pochettes/Pochettes/41a4dd4b-614d-4765-8ae8-66d2597df403_rw_1920.png', title: 'Cover Art', artist: 'Studio' },
-  { src: '/assets/Pochettes/Pochettes/371c7066-7f39-4846-b50f-4cae944d4088_rw_1920.jpg', title: 'Artwork', artist: 'Studio' },
+interface ArcadeItem {
+  src: string;
+  title: string;
+  artist: string;
+  type: 'image' | 'video';
+}
+
+const POCHETTES: ArcadeItem[] = [
+  { src: '/assets/Pochettes/Pochettes/JONEZ-POCHETTE.png',        title: 'Jonez',           artist: 'Alexia Naya', type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/LEAM-ENCORE-V2.png',        title: 'Encore',          artist: 'LEAM',        type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/PRODI9E-J9-FACE-A.png',     title: 'J-09 Face A',     artist: 'PRODI9E',     type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/PATEK---ROLLIE---CCICO-FINAL-2.png', title: 'Patek & Rollie', artist: 'CCICO', type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/JONEZZZ.png',               title: 'JONEZZZ',         artist: 'Alexia Naya', type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/MAKE-MORE-ZFN.jpg',         title: 'Make More',       artist: 'ZFN',         type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/41a4dd4b-614d-4765-8ae8-66d2597df403_rw_1920.png', title: 'Cover Art', artist: 'Studio', type: 'image' },
+  { src: '/assets/Pochettes/Pochettes/371c7066-7f39-4846-b50f-4cae944d4088_rw_1920.jpg', title: 'Artwork', artist: 'Studio', type: 'image' },
 ];
 
 function isValidTitle(title: string | null | undefined): boolean {
@@ -30,9 +37,9 @@ function isValidTitle(title: string | null | undefined): boolean {
   return true;
 }
 
-export default function ArcadeSection({ dbItems = [] }: { dbItems?: ArcadeItem[] }) {
+export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) {
   // Extract valid items from DB
-  const validDbItems = dbItems
+  const validDbItems: ArcadeItem[] = dbItems
     .filter(item => isValidTitle(item.title))
     .map(item => ({
       src: item.url,
