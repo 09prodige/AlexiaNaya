@@ -6,11 +6,17 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     
-    // 1. Validate Auth
-    const password = formData.get('password');
-    if (process.env.ADMIN_PASSWORD && password !== process.env.ADMIN_PASSWORD) {
-      return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 });
-    }
+    // 1. Validate Auth via JWT
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
 
     const file = formData.get('file') as File;
     const title = formData.get('title') as string;
@@ -56,10 +62,7 @@ export async function POST(req: NextRequest) {
     const type = file.type.startsWith('video') ? 'video' : 'image';
 
     // 3. Save to Supabase
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // (Supabase client already initialized with user token above)
 
     const { error: dbError } = await supabase
       .from('portfolio_items')

@@ -7,11 +7,12 @@ import BlinkLogo from './BlinkLogo';
 interface PageTransitionProps {
   href: string;
   className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
   onClick?: () => void;
 }
 
-export function TransitionLink({ href, className = '', children, onClick }: PageTransitionProps) {
+export function TransitionLink({ href, className = '', style, children, onClick }: PageTransitionProps) {
   const [transitioning, setTransitioning] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -28,7 +29,7 @@ export function TransitionLink({ href, className = '', children, onClick }: Page
 
   return (
     <>
-      <Link href={href} onClick={handleClick} className={className}>
+      <Link href={href} onClick={handleClick} className={className} style={style}>
         {children}
       </Link>
 

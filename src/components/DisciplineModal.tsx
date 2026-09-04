@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { CategoryData } from '@/lib/getPortfolio';
+import ImageCarousel3D from './ImageCarousel3D';
 
 interface DisciplineModalProps {
   category: CategoryData;
@@ -13,15 +14,8 @@ export default function DisciplineModal({ category, onClose }: DisciplineModalPr
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (lightboxIdx !== null) setLightboxIdx(null);
-        else onClose();
-      }
-      if (e.key === 'ArrowRight' && lightboxIdx !== null) {
-        setLightboxIdx((i) => (i! + 1) % category.items.length);
-      }
-      if (e.key === 'ArrowLeft' && lightboxIdx !== null) {
-        setLightboxIdx((i) => (i! - 1 + category.items.length) % category.items.length);
+      if (e.key === 'Escape' && lightboxIdx === null) {
+        onClose();
       }
     };
     window.addEventListener('keydown', handler);
@@ -30,7 +24,7 @@ export default function DisciplineModal({ category, onClose }: DisciplineModalPr
       window.removeEventListener('keydown', handler);
       document.body.style.overflow = '';
     };
-  }, [onClose, lightboxIdx, category.items.length]);
+  }, [onClose, lightboxIdx]);
 
   const textColor = category.textColor;
   const bgColor = category.color;
@@ -38,13 +32,6 @@ export default function DisciplineModal({ category, onClose }: DisciplineModalPr
 
   const openLightbox = useCallback((idx: number) => setLightboxIdx(idx), []);
   const closeLightbox = useCallback(() => setLightboxIdx(null), []);
-
-  const goNext = useCallback(() =>
-    setLightboxIdx((i) => (i! + 1) % category.items.length), [category.items.length]);
-  const goPrev = useCallback(() =>
-    setLightboxIdx((i) => (i! - 1 + category.items.length) % category.items.length), [category.items.length]);
-
-  const currentItem = lightboxIdx !== null ? category.items[lightboxIdx] : null;
 
   return (
     <div className="fixed inset-0 z-[100] overflow-hidden flex flex-col" style={{ backgroundColor: bgColor }}>
@@ -133,57 +120,12 @@ export default function DisciplineModal({ category, onClose }: DisciplineModalPr
       </div>
 
       {/* Lightbox */}
-      {lightboxIdx !== null && currentItem && (
-        <div
-          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center"
-          onClick={closeLightbox}
-        >
-          <button
-            className="absolute top-5 right-6 text-white/60 hover:text-white text-xs uppercase tracking-widest z-10"
-            onClick={closeLightbox}
-          >
-            Fermer ✕
-          </button>
-          <div className="absolute top-5 left-6 text-white/40 text-xs tracking-widest font-['Anton']">
-            {lightboxIdx + 1} / {category.items.length}
-          </div>
-          <button
-            className="absolute left-4 md:left-8 text-white/60 hover:text-white text-2xl z-10 p-3 hover:bg-white/10 rounded-full transition-colors"
-            onClick={(e) => { e.stopPropagation(); goPrev(); }}
-            aria-label="Précédent"
-          >
-            ←
-          </button>
-          <div
-            className="max-w-[90vw] max-h-[85vh] flex items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {currentItem.type === 'video' ? (
-              <video
-                key={lightboxIdx}
-                src={currentItem.url}
-                controls
-                autoPlay
-                playsInline
-                className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
-              />
-            ) : (
-              <img
-                key={lightboxIdx}
-                src={currentItem.url}
-                alt={currentItem.title || `Travail ${lightboxIdx + 1}`}
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-              />
-            )}
-          </div>
-          <button
-            className="absolute right-4 md:right-8 text-white/60 hover:text-white text-2xl z-10 p-3 hover:bg-white/10 rounded-full transition-colors"
-            onClick={(e) => { e.stopPropagation(); goNext(); }}
-            aria-label="Suivant"
-          >
-            →
-          </button>
-        </div>
+      {lightboxIdx !== null && (
+        <ImageCarousel3D
+          items={category.items}
+          initialIndex={lightboxIdx}
+          onClose={closeLightbox}
+        />
       )}
     </div>
   );

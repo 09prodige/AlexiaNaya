@@ -5,8 +5,8 @@ import Preloader from '@/components/Preloader';
 import HeroTitle from '@/components/HeroTitle';
 import CardDeck from '@/components/CardDeck';
 import ArcadeSection from '@/components/ArcadeSection';
+import ContactSection from '@/components/ContactSection';
 import DisciplineModal from '@/components/DisciplineModal';
-import FloatingDeco from '@/components/FloatingDeco';
 import { CategoryData } from '@/lib/getPortfolio';
 
 interface HomeClientProps {
@@ -39,18 +39,26 @@ export default function HomeClient({ categories }: HomeClientProps) {
         <Preloader onComplete={() => setPhase('content')} />
       )}
 
-      {/* ② Hero title + ③ Card deck + ④ Arcade */}
-      {phase === 'content' && (
-        <>
-          <FloatingDeco />
-          <HeroTitle />
-          <CardDeck
-            categories={categories}
-            onOpenDiscipline={(cat) => setOpenCategory(cat)}
-          />
-          <ArcadeSection />
-        </>
-      )}
+      {/* Extract pochette items for ArcadeSection */}
+      {(() => {
+        const pochetteItems = categories.find(c => c.disciplineId === 'pochette')?.items || [];
+        return (
+          <>
+            {/* ② Hero title + ③ Card deck + ④ Arcade */}
+            {phase === 'content' && (
+              <>
+                <HeroTitle />
+                <CardDeck
+                  categories={categories}
+                  onOpenDiscipline={(cat) => setOpenCategory(cat)}
+                />
+                <ArcadeSection dbItems={pochetteItems} />
+                <ContactSection />
+              </>
+            )}
+          </>
+        );
+      })()}
 
       {/* ④ Discipline modal overlay */}
       {openCategory && (

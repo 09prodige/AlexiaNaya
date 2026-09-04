@@ -32,7 +32,7 @@ export default function CardDeck({ categories, onOpenDiscipline }: CardDeckProps
   return (
     <section
       id="cards"
-      className="relative w-full min-h-screen flex flex-col items-center justify-start bg-transparent pt-32 pb-16 overflow-hidden"
+      className="relative w-full flex flex-col items-center justify-start bg-transparent pt-32 pb-16"
     >
       {/* Section label */}
       <p
@@ -46,8 +46,8 @@ export default function CardDeck({ categories, onOpenDiscipline }: CardDeckProps
         Choisissez une discipline
       </p>
 
-      {/* Card fan */}
-      <div className="w-full flex justify-center mb-[-100px] sm:mb-0 md:mb-32 mt-[-50px] md:mt-0">
+      {/* Card fan — fixed height container so it never overlaps what's below */}
+      <div className="w-full flex justify-center mb-8 sm:mb-12 md:mb-20">
         <div 
           className="relative flex items-end justify-center origin-bottom scale-[0.55] sm:scale-[0.75] md:scale-100" 
           style={{ height: 420, width: '100%', perspective: '1200px' }}

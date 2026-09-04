@@ -5,15 +5,15 @@ import { TransitionLink } from './PageTransition';
 
 
 const MENU_ITEMS = [
-  { label: 'BRANDING',     href: '/?category=branding', isCard: true },
-  { label: 'DA PHOTO',     href: '/?category=da-photo', isCard: true },
-  { label: 'ILLUSTRATION', href: '/?category=illustration', isCard: true },
-  { label: 'ÉDITION',      href: '/?category=edition', isCard: true },
-  { label: 'VIDÉO',        href: '/?category=video', isCard: true },
-  { label: 'POCHETTE',     href: '/?category=pochette', isCard: true },
-  { label: 'À PROPOS',     href: '/about', isCard: false },
-  { label: 'CONTACT',      href: '/contact', isCard: false },
-  { label: 'CGV',          href: '/cgv', isCard: false },
+  { label: 'BRANDING',     href: '/?category=branding',    isCard: true,  color: '#F2F083' },
+  { label: 'DA PHOTO',     href: '/?category=da-photo',    isCard: true,  color: '#E34040' },
+  { label: 'ILLUSTRATION', href: '/?category=illustration', isCard: true,  color: '#A8C850' },
+  { label: 'ÉDITION',      href: '/?category=edition',     isCard: true,  color: '#A5D4D8' },
+  { label: 'VIDÉO',        href: '/?category=video',       isCard: true,  color: '#CCA8D5' },
+  { label: 'POCHETTE',     href: '/?category=pochette',    isCard: true,  color: '#FFFFFF' },
+  { label: 'À PROPOS',     href: '/about',                 isCard: false, color: '#FFFFFF' },
+  { label: 'CONTACT',      href: '/contact',               isCard: false, color: '#FFFFFF' },
+  { label: 'CGV',          href: '/cgv',                   isCard: false, color: '#FFFFFF' },
 ];
 
 export default function Header() {
@@ -137,8 +137,9 @@ export default function Header() {
                     <div className="flex items-center gap-4 py-1">
                       {/* Arrow indicator for active item */}
                       <span
-                        className="font-['Anton'] text-white transition-all duration-300"
+                        className="font-['Anton'] transition-all duration-300"
                         style={{
+                          color: item.color,
                           opacity: isActive ? 1 : 0,
                           transform: isActive ? 'translateX(0)' : 'translateX(-8px)',
                           fontSize: 'clamp(1.5rem, 4vw, 3rem)',
@@ -151,7 +152,8 @@ export default function Header() {
                         <TransitionLink
                           href={item.href}
                           onClick={close}
-                          className="font-['Anton'] text-white uppercase leading-none hover:no-underline"
+                          className="font-['Anton'] uppercase leading-none hover:no-underline transition-colors duration-300"
+                          style={{ color: item.color, opacity: isActive ? 1 : 0.3 }}
                         >
                           {item.label}
                         </TransitionLink>

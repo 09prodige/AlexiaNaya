@@ -20,29 +20,7 @@ export interface CategoryData {
   }[];
 }
 
-function getAllFiles(dirPath: string): string[] {
-  let results: string[] = [];
-  if (!fs.existsSync(dirPath)) return results;
 
-  const list = fs.readdirSync(dirPath);
-  list.forEach((file) => {
-    const filePath = path.join(dirPath, file);
-    const stat = fs.statSync(filePath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(getAllFiles(filePath));
-    } else {
-      if (!file.startsWith('.') && !file.toLowerCase().includes('animat logo')) {
-        results.push(filePath);
-      }
-    }
-  });
-  return results;
-}
-
-function toRelUrl(absPath: string): string {
-  const relPath = '/' + path.relative(path.join(process.cwd(), 'public'), absPath).replace(/\\/g, '/');
-  return encodeURI(relPath);
-}
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -51,15 +29,26 @@ export async function getCategoriesData(): Promise<CategoryData[]> {
 
   // 1. Fetch from Supabase (if configured)
   let supabaseItems: any[] = [];
+  let customCategories: Record<string, string> = {};
+  
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
       );
-      const { data, error } = await supabase.from('portfolio_items').select('*');
-      if (!error && data) {
-        supabaseItems = data;
+      // Fetch items
+      const { data: itemsData, error: itemsError } = await supabase.from('portfolio_items').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false });
+      if (!itemsError && itemsData) {
+        supabaseItems = itemsData;
+      }
+      
+      // Fetch custom category names
+      const { data: catData, error: catError } = await supabase.from('portfolio_categories').select('*');
+      if (!catError && catData) {
+        catData.forEach((c: any) => {
+          customCategories[c.id] = c.label;
+        });
       }
     } catch (e) {
       console.warn("Failed to fetch from Supabase:", e);
@@ -67,25 +56,7 @@ export async function getCategoriesData(): Promise<CategoryData[]> {
   }
 
   return DISCIPLINES.map((discipline) => {
-    // 2. Gather local files
-    const allFiles: string[] = [];
-    for (const folderName of discipline.folders) {
-      const folderPath = path.join(assetsDir, folderName);
-      allFiles.push(...getAllFiles(folderPath));
-    }
-
-    const localItems = allFiles.map((absPath) => {
-      const relPath = toRelUrl(absPath);
-      const ext = path.extname(absPath).toLowerCase();
-      const isVideo = ['.mp4', '.mov', '.webm', '.avi'].includes(ext);
-      return {
-        title: '',
-        type: isVideo ? ('video' as const) : ('image' as const),
-        url: relPath,
-      };
-    });
-
-    // 3. Gather Supabase files for this discipline
+    // 2. Gather Supabase files for this discipline
     const remoteItems = supabaseItems
       .filter(item => item.category_id === discipline.id)
       .map(item => ({
@@ -94,14 +65,16 @@ export async function getCategoriesData(): Promise<CategoryData[]> {
         url: item.image_url,
       }));
 
-    // 4. Merge
-    const items = [...remoteItems, ...localItems];
+    const items = [...remoteItems];
     const coverItem = items.find((i) => i.type === 'image') || items[0];
+
+    // Merge custom label if available
+    const finalLabel = customCategories[discipline.id] || discipline.label;
 
     return {
       id: discipline.id,
-      title: discipline.label,
-      categoryName: discipline.label,
+      title: finalLabel,
+      categoryName: finalLabel,
       disciplineId: discipline.id,
       color: discipline.color,
       textColor: discipline.textColor,

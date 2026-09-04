@@ -21,6 +21,9 @@ export default function Footer() {
           </TransitionLink>
         </div>
       </div>
+      <div className="max-w-7xl mx-auto mt-6 pt-6 border-t border-white/5 text-center text-[10px] uppercase tracking-[0.25em] text-white/20">
+        Développé par Jérémie AKWE
+      </div>
     </footer>
   );
 }

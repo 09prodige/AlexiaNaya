@@ -29,12 +29,8 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${syne.className} bg-[#111111] text-white antialiased relative`}>
-        {/* Background Textures & Details */}
+        {/* Background Grid */}
         <div className="bg-grid" />
-        <div className="vintage-noise" />
-        <div className="film-scratch-layer" />
-        <div className="film-scratch-layer-2" />
-        <div className="vignette" />
         
         <CustomCursor />
         <Header />
