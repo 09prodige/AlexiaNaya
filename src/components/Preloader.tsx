@@ -1,36 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import BlinkLogo from './BlinkLogo';
+import { useState, useRef, useEffect } from 'react';
 
-export default function Preloader() {
-  const [loading, setLoading] = useState(true);
-  const [fadeOut, setFadeOut] = useState(false);
+interface PreloaderProps {
+  onComplete: () => void;
+}
 
+export default function Preloader({ onComplete }: PreloaderProps) {
+  const [visible, setVisible] = useState(true);
+  const [fading, setFading] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleEnd = () => {
+    setFading(true);
+    setTimeout(() => {
+      setVisible(false);
+      onComplete();
+    }, 800);
+  };
+
+  // Safety fallback: auto-dismiss after 12s if video doesn't fire onEnded
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setFadeOut(true);
-      setTimeout(() => {
-        setLoading(false);
-      }, 700);
-    }, 2500);
-
+    const timer = setTimeout(handleEnd, 12000);
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!loading) return null;
+  if (!visible) return null;
 
   return (
-    <div 
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FDFDFD] transition-opacity duration-700 ease-in-out ${
-        fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
+    <div
+      className={`fixed inset-0 z-[200] bg-black transition-opacity duration-700 ease-in-out ${
+        fading ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
+      onClick={handleEnd}
     >
-      {/* Responsive logo size for Mobile & PC */}
-      <BlinkLogo className="w-56 h-56 sm:w-80 sm:h-80 md:w-[420px] md:h-[420px]" />
-      <p className="mt-8 text-xs sm:text-base uppercase tracking-[0.4em] font-light text-gray-400 animate-pulse">
-        Alexia D'Oliveira
-      </p>
+      <video
+        ref={videoRef}
+        src="/assets/BOUCLE TEMPORELLE_Naya.mp4"
+        autoPlay
+        muted
+        playsInline
+        onEnded={handleEnd}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Skip hint */}
+      <span className="absolute bottom-8 right-8 text-white/40 text-xs uppercase tracking-widest select-none">
+        Cliquer pour passer
+      </span>
     </div>
   );
 }
+

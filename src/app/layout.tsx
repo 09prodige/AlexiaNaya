@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Syne } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import Preloader from "@/components/Preloader";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
-import BackgroundLogo from "@/components/BackgroundLogo";
 
 // Syne font: high impact, editorial, bold design font
 const syne = Syne({ 
@@ -30,10 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${syne.className} bg-[#FDFDFD] text-black antialiased relative`}>
-        <BackgroundLogo />
+      <body className={`${syne.className} bg-[#111111] text-white antialiased relative`}>
+        {/* Background Textures & Details */}
+        <div className="bg-grid" />
+        <div className="vintage-noise" />
+        <div className="film-scratch-layer" />
+        <div className="film-scratch-layer-2" />
+        <div className="vignette" />
+        
         <CustomCursor />
-        <Preloader />
         <Header />
         {children}
         <Footer />
