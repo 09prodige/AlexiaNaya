@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PortfolioItem } from '@/lib/getPortfolio';
 
 const POCHETTES = [
   { src: '/assets/Pochettes/Pochettes/JONEZ-POCHETTE.png',        title: 'Jonez',           artist: 'Alexia Naya' },
@@ -14,7 +15,29 @@ const POCHETTES = [
   { src: '/assets/Pochettes/Pochettes/371c7066-7f39-4846-b50f-4cae944d4088_rw_1920.jpg', title: 'Artwork', artist: 'Studio' },
 ];
 
-export default function ArcadeSection() {
+function isValidTitle(title: string | null | undefined): boolean {
+  if (!title) return false;
+  if (title.trim() === '') return false;
+  // Exclude raw filenames with extensions
+  if (/\.(jpg|jpeg|png|webp|avif|gif|mp4|webm|mov)$/i.test(title)) return false;
+  // Exclude UUID-based filenames
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}/i.test(title)) return false;
+  return true;
+}
+
+export default function ArcadeSection({ dbItems = [] }: { dbItems?: PortfolioItem[] }) {
+  // Extract valid items from DB
+  const validDbItems = dbItems
+    .filter(item => isValidTitle(item.title))
+    .map(item => ({
+      src: item.image_url,
+      title: item.title || '',
+      artist: 'Alexia Naya',
+      type: item.type
+    }));
+
+  const items = validDbItems.length > 0 ? validDbItems : POCHETTES;
+
   const [activeIdx, setActiveIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [rotation, setRotation] = useState(0);
@@ -39,9 +62,9 @@ export default function ArcadeSection() {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [isPlaying]);
 
-  const current = POCHETTES[activeIdx];
-  const prev = () => { setActiveIdx((i) => (i - 1 + POCHETTES.length) % POCHETTES.length); lastTimeRef.current = 0; };
-  const next = () => { setActiveIdx((i) => (i + 1) % POCHETTES.length); lastTimeRef.current = 0; };
+  const current = items[activeIdx];
+  const prev = () => { setActiveIdx((i) => (i - 1 + items.length) % items.length); lastTimeRef.current = 0; };
+  const next = () => { setActiveIdx((i) => (i + 1) % items.length); lastTimeRef.current = 0; };
 
   return (
     <section className="relative w-full min-h-screen bg-[#0a0a0a] pt-24 pb-32 overflow-hidden border-t border-white/5">
@@ -64,7 +87,7 @@ export default function ArcadeSection() {
         >
           <p className="text-white/30 uppercase tracking-[0.4em] text-xs mb-4">Cover Art & Direction Artistique</p>
           <h2 className="font-['Anton'] text-6xl md:text-8xl text-white tracking-tighter leading-none">
-            LES<br />
+            QUELQUES<br />
             <span className="text-white/20">POCHETTES</span>
           </h2>
         </motion.div>
@@ -88,16 +111,32 @@ export default function ArcadeSection() {
                 style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
               >
                 <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeIdx}
-                    src={current.src}
-                    alt={current.title}
-                    className="w-full h-full object-cover"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  {current.type === 'video' ? (
+                    <motion.video
+                      key={activeIdx}
+                      src={current.src}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  ) : (
+                    <motion.img
+                      key={activeIdx}
+                      src={current.src}
+                      alt={current.title}
+                      className="w-full h-full object-cover"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
                 </AnimatePresence>
               </div>
               {/* Center dot */}
@@ -178,21 +217,25 @@ export default function ArcadeSection() {
 
             {/* Track count */}
             <p className="text-white/20 text-xs uppercase tracking-widest">
-              {activeIdx + 1} / {POCHETTES.length}
+              {activeIdx + 1} / {items.length}
             </p>
           </div>
         </div>
 
         {/* Thumbnail strip */}
         <div className="mt-20 flex gap-3 overflow-x-auto pb-4 scrollbar-none justify-center flex-wrap">
-          {POCHETTES.map((p, i) => (
+          {items.map((p, i) => (
             <button
               key={i}
               onClick={() => { setActiveIdx(i); lastTimeRef.current = 0; }}
-              className="relative w-14 h-14 md:w-16 md:h-16 rounded overflow-hidden flex-shrink-0 transition-all duration-300"
+              className="relative w-14 h-14 md:w-16 md:h-16 rounded overflow-hidden flex-shrink-0 transition-all duration-300 bg-[#111]"
               style={{ opacity: i === activeIdx ? 1 : 0.35, transform: i === activeIdx ? 'scale(1.15)' : 'scale(1)', outline: i === activeIdx ? '2px solid white' : 'none', outlineOffset: '2px' }}
             >
-              <img src={p.src} alt={p.title} className="w-full h-full object-cover" />
+              {p.type === 'video' ? (
+                <video src={p.src} className="w-full h-full object-cover" />
+              ) : (
+                <img src={p.src} alt={p.title} className="w-full h-full object-cover" />
+              )}
             </button>
           ))}
         </div>
