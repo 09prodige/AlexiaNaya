@@ -12,7 +12,7 @@ const MENU_ITEMS = [
   { label: 'VIDÉO',        href: '/?category=video',       isCard: true,  color: '#CCA8D5' },
   { label: 'POCHETTE',     href: '/?category=pochette',    isCard: true,  color: '#FFFFFF' },
   { label: 'À PROPOS',     href: '/about',                 isCard: false, color: '#FFFFFF' },
-  { label: 'CONTACT',      href: '/contact',               isCard: false, color: '#FFFFFF' },
+  { label: 'CONTACT',      href: '/#contact',              isCard: false, color: '#FFFFFF' },
   { label: 'CGV',          href: '/cgv',                   isCard: false, color: '#FFFFFF' },
 ];
 
@@ -81,7 +81,7 @@ export default function Header() {
       {/* ── Fullscreen slot-machine menu ────────────────────────────── */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[150] bg-[#111111] flex flex-col"
+          className="fixed inset-0 z-[150] bg-[#111111] flex flex-col touch-none"
           onWheel={handleWheel}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -123,16 +123,6 @@ export default function Header() {
                       opacity,
                       zIndex: isActive ? 10 : 1,
                     }}
-                    onClick={() => {
-                      if (isActive) {
-                        close();
-                        if (!item.isCard) {
-                          // navigation handled by TransitionLink below
-                        }
-                      } else {
-                        navigate(idx);
-                      }
-                    }}
                   >
                     <div className="flex items-center gap-4 py-1">
                       {/* Arrow indicator for active item */}
@@ -149,14 +139,33 @@ export default function Header() {
                       </span>
 
                       <span className="transition-all duration-500" style={{ fontSize }}>
-                        <TransitionLink
-                          href={item.href}
-                          onClick={close}
-                          className="font-['Anton'] uppercase leading-none hover:no-underline transition-colors duration-300"
-                          style={{ color: item.color, opacity: isActive ? 1 : 0.3 }}
-                        >
-                          {item.label}
-                        </TransitionLink>
+                        {item.href.startsWith('/#') ? (
+                          <a
+                            href={item.href}
+                            onClick={(e) => {
+                              // If we are already on home page, just close the menu so smooth scroll works
+                              if (window.location.pathname === '/') {
+                                close();
+                              } else {
+                                // If not on home page, normal anchor click will navigate to home + scroll
+                                close();
+                              }
+                            }}
+                            className="font-['Anton'] uppercase leading-none hover:no-underline transition-colors duration-300 block w-full h-full"
+                            style={{ color: item.color, opacity: isActive ? 1 : 0.3 }}
+                          >
+                            {item.label}
+                          </a>
+                        ) : (
+                          <TransitionLink
+                            href={item.href}
+                            onClick={close}
+                            className="font-['Anton'] uppercase leading-none hover:no-underline transition-colors duration-300 block w-full h-full"
+                            style={{ color: item.color, opacity: isActive ? 1 : 0.3 }}
+                          >
+                            {item.label}
+                          </TransitionLink>
+                        )}
                       </span>
                     </div>
                   </div>

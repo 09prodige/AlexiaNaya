@@ -24,7 +24,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
   // Safety fallback & Session check
   useEffect(() => {
-    if (sessionStorage.getItem('preloader_seen')) {
+    if (sessionStorage.getItem('preloader_seen') || window.innerWidth < 768) {
       setVisible(false);
       onComplete();
       return;

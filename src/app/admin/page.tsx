@@ -45,13 +45,13 @@ type DialogConfig = {
 
 interface DialogHelpers {
   confirm: (title: string, message?: string) => Promise<boolean>;
-  prompt: (title: string, defaultValue?: string) => Promise<string|null>;
-  transfer: (title: string) => Promise<string|null>;
+  prompt: (title: string, defaultValue?: string) => Promise<string | null>;
+  transfer: (title: string) => Promise<string | null>;
 }
 
 function DialogContainer({ dialog, onClose }: { dialog: DialogConfig, onClose: () => void }) {
   const [value, setValue] = useState('');
-  
+
   useEffect(() => {
     if (dialog?.type === 'prompt' || dialog?.type === 'transfer') {
       setValue(dialog.defaultValue || '');
@@ -78,7 +78,7 @@ function DialogContainer({ dialog, onClose }: { dialog: DialogConfig, onClose: (
       <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
         <h3 className="font-['Anton'] text-2xl text-white uppercase mb-4">{dialog.title}</h3>
         {dialog.message && <p className="text-white/70 text-sm whitespace-pre-wrap mb-6">{dialog.message}</p>}
-        
+
         <form onSubmit={handleSubmit}>
           {dialog.type === 'prompt' && (
             <input
@@ -89,7 +89,7 @@ function DialogContainer({ dialog, onClose }: { dialog: DialogConfig, onClose: (
               autoFocus
             />
           )}
-          
+
           {dialog.type === 'transfer' && (
             <select
               value={value}
@@ -127,7 +127,7 @@ function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password: pwd,
@@ -152,9 +152,9 @@ function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
       >
         <p className="text-white/30 text-xs uppercase tracking-[0.3em] mb-2">Espace privé</p>
         <h1 className="font-['Anton'] text-5xl text-white mb-8 uppercase">Admin</h1>
-        
+
         {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
-        
+
         <input
           type="email" value={email} onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
@@ -208,10 +208,10 @@ function UploadZone({ token }: { token: string }) {
       fd.append('category', category);
       fd.append('title', file.name.replace(/\.[^/.]+$/, ''));
 
-      const res = await fetch('/api/upload', { 
-        method: 'POST', 
+      const res = await fetch('/api/upload', {
+        method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
-        body: fd 
+        body: fd
       });
       if (!res.ok) {
         const d = await res.json();
@@ -333,10 +333,10 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
     }
   }, []);
 
-  useEffect(() => { 
-    fetchItems(); 
+  useEffect(() => {
+    fetchItems();
     fetchCatNames();
-    
+
     // Close context menu on click anywhere
     const closeMenu = () => setContextMenu(prev => ({ ...prev, visible: false }));
     window.addEventListener('click', closeMenu);
@@ -389,7 +389,7 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
   const handleTransfer = async (item: PortfolioItem) => {
     const destCatId = await dialogs.transfer('Transférer vers quelle rubrique ?');
     if (!destCatId) return;
-    
+
     setItems(prev => prev.filter(i => i.id !== item.id));
     await fetch('/api/items', {
       method: 'PATCH',
@@ -446,7 +446,7 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
       {loading && <p className="text-white/30 text-sm text-center py-12">Chargement...</p>}
 
       {!loading && items.length === 0 && (
-        <p className="text-white/20 text-sm text-center py-12">Aucune image dans cette catégorie.<br/>(Seules les images uploadées via l'admin apparaissent ici)</p>
+        <p className="text-white/20 text-sm text-center py-12">Aucune image dans cette catégorie.<br />(Seules les images uploadées via l'admin apparaissent ici)</p>
       )}
 
       {!loading && items.length > 0 && (
@@ -477,7 +477,7 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
 
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                
+
                 {/* Info */}
                 <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   {item.title && <p className="text-white text-[10px] font-bold uppercase truncate">{item.title}</p>}
@@ -493,7 +493,7 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
 
       {/* Custom Context Menu */}
       {contextMenu.visible && contextMenu.item && (
-        <div 
+        <div
           className="fixed z-50 bg-[#222] border border-white/10 rounded-lg shadow-2xl overflow-hidden py-1 min-w-[180px]"
           style={{ top: contextMenu.y, left: contextMenu.x }}
           onClick={(e) => e.stopPropagation()}
@@ -501,22 +501,22 @@ function GalleryManager({ token, dialogs }: { token: string, dialogs: DialogHelp
           <div className="px-3 py-2 border-b border-white/10">
             <p className="text-[10px] uppercase text-white/40 truncate">{contextMenu.item.title || 'Sans titre'}</p>
           </div>
-          <button 
+          <button
             className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-            onClick={() => { handleRenameItem(contextMenu.item!); setContextMenu({ visible: false, x:0, y:0, item:null }); }}
+            onClick={() => { handleRenameItem(contextMenu.item!); setContextMenu({ visible: false, x: 0, y: 0, item: null }); }}
           >
             ✏️ Renommer
           </button>
-          <button 
+          <button
             className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-            onClick={() => { handleTransfer(contextMenu.item!); setContextMenu({ visible: false, x:0, y:0, item:null }); }}
+            onClick={() => { handleTransfer(contextMenu.item!); setContextMenu({ visible: false, x: 0, y: 0, item: null }); }}
           >
             ↗️ Transférer à...
           </button>
           <div className="h-px bg-white/10 my-1" />
-          <button 
+          <button
             className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/20 transition-colors"
-            onClick={() => { handleDelete(contextMenu.item!.id); setContextMenu({ visible: false, x:0, y:0, item:null }); }}
+            onClick={() => { handleDelete(contextMenu.item!.id); setContextMenu({ visible: false, x: 0, y: 0, item: null }); }}
           >
             🗑️ Supprimer
           </button>
@@ -572,13 +572,13 @@ function QuotesManager({ token, dialogs }: { token: string, dialogs: DialogHelpe
           <h2 className="font-['Anton'] text-2xl text-white uppercase">Devis</h2>
           <button onClick={fetchQuotes} className="text-white/40 hover:text-white text-xs uppercase tracking-widest transition-colors">↺</button>
         </div>
-        
+
         {loading && <p className="text-white/30 text-sm">Chargement...</p>}
         {!loading && quotes.length === 0 && <p className="text-white/30 text-sm">Aucune demande reçue.</p>}
-        
+
         <div className="flex-1 overflow-y-auto space-y-2 pr-2">
           {quotes.map(q => (
-            <div 
+            <div
               key={q.id}
               onClick={() => { setSelected(q); if (!q.is_read) handleMarkAsRead(q.id, true); }}
               className={`p-4 rounded-xl cursor-pointer transition-colors border ${selected?.id === q.id ? 'bg-white/10 border-white/20' : 'bg-black/30 border-transparent hover:bg-black/50'}`}
@@ -626,7 +626,7 @@ function QuotesManager({ token, dialogs }: { token: string, dialogs: DialogHelpe
               <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-3">Détails du projet</p>
               <p className="text-white/80 text-sm whitespace-pre-wrap leading-relaxed">{selected.details}</p>
             </div>
-            
+
             <a href={`mailto:${selected.email}?subject=RE: Demande de devis - ${selected.category}`} className="mt-8 inline-block bg-white text-black font-bold uppercase tracking-widest px-8 py-3 rounded-xl hover:bg-gray-200 transition-colors text-xs">
               Répondre par email
             </a>
@@ -646,7 +646,7 @@ export default function AdminPage() {
   const [token, setToken] = useState('');
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [tab, setTab] = useState<'upload' | 'manage' | 'quotes'>('upload');
-  
+
   const [dialog, setDialog] = useState<DialogConfig>(null);
 
   const dialogs: DialogHelpers = {
@@ -720,7 +720,7 @@ export default function AdminPage() {
         {tab === 'upload' && <UploadZone token={token} />}
         {tab === 'manage' && <GalleryManager token={token} dialogs={dialogs} />}
         {tab === 'quotes' && <QuotesManager token={token} dialogs={dialogs} />}
-        
+
       </div>
 
       <DialogContainer dialog={dialog} onClose={() => setDialog(null)} />

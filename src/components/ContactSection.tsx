@@ -46,8 +46,8 @@ export default function ContactSection() {
             <div className="space-y-6">
               <div>
                 <p className="text-white/30 text-xs uppercase tracking-[0.2em] mb-3">Email</p>
-                <a href="mailto:nayadoliv03@gmail.com" className="group flex items-center gap-3 text-xl font-bold hover:text-[#E34040] transition-colors">
-                  <div className="p-3 bg-white/5 rounded-full group-hover:bg-[#E34040]/10 transition-colors">
+                <a href="mailto:nayadoliv03@gmail.com" className="group flex items-center gap-3 text-base md:text-xl font-bold hover:text-[#E34040] transition-colors break-all">
+                  <div className="p-3 bg-white/5 rounded-full group-hover:bg-[#E34040]/10 transition-colors flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                   </div>
                   nayadoliv03@gmail.com

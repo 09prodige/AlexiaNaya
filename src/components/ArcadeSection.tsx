@@ -40,7 +40,7 @@ function isValidTitle(title: string | null | undefined): boolean {
 export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) {
   // Extract valid items from DB
   const validDbItems: ArcadeItem[] = dbItems
-    .filter(item => isValidTitle(item.title))
+    .filter(item => isValidTitle(item.title) && item.url)
     .map(item => ({
       src: item.url,
       title: item.title || '',
@@ -51,7 +51,7 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
   const items = validDbItems.length > 0 ? validDbItems : POCHETTES;
 
   const [activeIdx, setActiveIdx] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [rotation, setRotation] = useState(0);
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
@@ -77,6 +77,8 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
   const current = items[activeIdx];
   const prev = () => { setActiveIdx((i) => (i - 1 + items.length) % items.length); lastTimeRef.current = 0; };
   const next = () => { setActiveIdx((i) => (i + 1) % items.length); lastTimeRef.current = 0; };
+
+  if (!current) return null;
 
   return (
     <section className="relative w-full min-h-screen bg-[#0a0a0a] pt-24 pb-32 overflow-hidden border-t border-white/5">
@@ -142,7 +144,7 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
                       key={activeIdx}
                       src={current.src}
                       alt={current.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover text-transparent"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -188,22 +190,8 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
               </motion.div>
             </AnimatePresence>
 
-            {/* Cover preview */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIdx}
-                className="w-40 h-40 md:w-52 md:h-52 mx-auto md:mx-0 rounded-lg overflow-hidden shadow-2xl"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <img src={current.src} alt={current.title} className="w-full h-full object-cover" />
-              </motion.div>
-            </AnimatePresence>
-
             {/* Controls */}
-            <div className="flex items-center gap-6 justify-center md:justify-start">
+            <div className="flex items-center gap-4 justify-center md:justify-start">
               <button
                 onClick={prev}
                 className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/60 transition-all"
@@ -246,7 +234,7 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
               {p.type === 'video' ? (
                 <video src={p.src} className="w-full h-full object-cover" />
               ) : (
-                <img src={p.src} alt={p.title} className="w-full h-full object-cover" />
+                <img src={p.src} alt={p.title} className="w-full h-full object-cover text-transparent" />
               )}
             </button>
           ))}
@@ -256,4 +244,3 @@ export default function ArcadeSection({ dbItems = [] }: { dbItems?: DbItem[] }) 
     </section>
   );
 }
-

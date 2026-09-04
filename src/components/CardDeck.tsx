@@ -49,8 +49,8 @@ export default function CardDeck({ categories, onOpenDiscipline }: CardDeckProps
       {/* Card fan — fixed height container so it never overlaps what's below */}
       <div className="w-full flex justify-center mb-8 sm:mb-12 md:mb-20">
         <div 
-          className="relative flex items-end justify-center origin-bottom scale-[0.55] sm:scale-[0.75] md:scale-100" 
-          style={{ height: 420, width: '100%', perspective: '1200px' }}
+          className="relative flex items-end justify-center origin-bottom scale-[0.35] sm:scale-[0.75] md:scale-100 h-[220px] sm:h-[350px] md:h-[420px] w-full" 
+          style={{ perspective: '1200px' }}
         >
         {DISCIPLINES.map((discipline, idx) => {
           const cat = categories.find((c) => c.disciplineId === discipline.id);
