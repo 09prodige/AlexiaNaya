@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PortfolioItem } from '@/lib/getPortfolio';
+
+interface ArcadeItem {
+  title: string;
+  type: 'image' | 'video';
+  url: string;
+}
 
 const POCHETTES = [
   { src: '/assets/Pochettes/Pochettes/JONEZ-POCHETTE.png',        title: 'Jonez',           artist: 'Alexia Naya' },
@@ -25,12 +30,12 @@ function isValidTitle(title: string | null | undefined): boolean {
   return true;
 }
 
-export default function ArcadeSection({ dbItems = [] }: { dbItems?: PortfolioItem[] }) {
+export default function ArcadeSection({ dbItems = [] }: { dbItems?: ArcadeItem[] }) {
   // Extract valid items from DB
   const validDbItems = dbItems
     .filter(item => isValidTitle(item.title))
     .map(item => ({
-      src: item.image_url,
+      src: item.url,
       title: item.title || '',
       artist: 'Alexia Naya',
       type: item.type
